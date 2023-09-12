@@ -6,27 +6,26 @@
 #include "constants.h"
 #include "mini-shell-parser.c"
 
-void ejecutar_cmd(char* cmd, char* p) {
-  execlp(cmd, cmd, p, NULL);
-}
-
 // 0 ES LECTURA - 1 ES ESCRITURA
-
 void hijo(char ***progs, int pipes[][2], int position, int pipe_qty) {
-	for(int i = 0; i < pipe_qty; i++) {
-		if( position == 0 ) {
-			if( position == i ) {
-				close(pipes[i][0]);
-				dup2(pipes[i][1], STDOUT_FILENO);
-			}
-		} else if( position == pipe_qty - 1) {
-			if( position == i ) {
-				close(pipes[i][1]);
-				dup2(pipes[i][0], STDIN_FILENO);
-			}
-		} else {
+	if(position == 0) {
+		close(pipes[0][0]);
+		dup2(pipes[0][1], STDOUT_FILENO);
+		for(int i = position + 1; i < pipe_qty; i++) {
+			close(pipes[i][0]);
+			close(pipes[i][1]);
+		}
+	} else if(position == pipe_qty) {
+		close(pipes[position-1][1]);
+		dup2(pipes[position-1][0], STDIN_FILENO);
+		for(int i = 0; i < pipe_qty - 1; i++) {
+			close(pipes[i][0]);
+			close(pipes[i][1]);
+		}
+	} else {
+		for(int i = 0; i < pipe_qty; i++) {
 			if( i == position || i == position - 1 ) {
-				if(i != position) {
+				if(i == position) {
 					close(pipes[i][0]);
 					dup2(pipes[i][1], STDOUT_FILENO);
 				} else {
@@ -39,8 +38,7 @@ void hijo(char ***progs, int pipes[][2], int position, int pipe_qty) {
 			}
 		}
 	}
-	execvp(progs[position][0], progs[position]);
-	exit(0);
+	execlp(*progs[position], *progs[position], *progs[position], NULL);
 }
 
 static int run(char ***progs, size_t count) {	
@@ -56,9 +54,22 @@ static int run(char ***progs, size_t count) {
 		if(p == -1) perror("Error");
 	}
 
+	printf("%s\n", *(progs[0]));
+	//printf("%s\n", *(progs[0]+1));
+	//printf("%s\n", *(progs[0]+2));
+
+	//printf("%s\n", *(progs[1]));
+	//printf("%s\n", *(progs[1]+1));
+	//printf("%s\n", *(progs[1]+2));
+
+	//printf("%s\n", *(progs[2]));
+	//printf("%s\n", *(progs[2]+1));
+	
 	//TODO: Pensar cuantos procesos necesito
 	for(int i = 0; i < count; i++) {
+		printf("Proceso numero: %d\n", i);
 		pid_t pid = fork();
+		children[i] = pid;
 		if(pid == 0) {
 			hijo(progs, pipes, i, count - 1);
 		}
@@ -71,6 +82,7 @@ static int run(char ***progs, size_t count) {
 
 	//Espero a los hijos y verifico el estado que terminaron
 
+	printf("Hello world");
 	for (int i = 0; i < count; i++) {
 		waitpid(children[i], &status, 0);
 		if (!WIFEXITED(status)) {
