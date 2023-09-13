@@ -11,7 +11,7 @@ void hijo(char ***progs, int pipes[][2], int position, int pipe_qty) {
 	if(position == 0) {
 		close(pipes[0][0]);
 		dup2(pipes[0][1], STDOUT_FILENO);
-		for(int i = position + 1; i < pipe_qty; i++) {
+		for(int i = 1; i < pipe_qty; i++) {
 			close(pipes[i][0]);
 			close(pipes[i][1]);
 		}
@@ -38,7 +38,9 @@ void hijo(char ***progs, int pipes[][2], int position, int pipe_qty) {
 			}
 		}
 	}
-	execlp(*progs[position], *progs[position], *progs[position], NULL);
+	
+	execvp(progs[position][0], progs[position]);
+	
 }
 
 static int run(char ***progs, size_t count) {	
