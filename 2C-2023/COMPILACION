@@ -1,0 +1,2 @@
+compilación STRING
+gcc 3.22.cpp -o ej32 -lstdc++

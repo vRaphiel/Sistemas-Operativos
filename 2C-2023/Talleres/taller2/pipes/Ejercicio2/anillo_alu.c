@@ -149,7 +149,6 @@ int main(int argc, char **argv) {
 						printf("pipe current is %d", i);
 						exit(1); 
 					}
-					printf("Current value is %d", number);
 					number++;
 					if(write(pipes[i][1], &number, sizeof(int)) == -1) {
 						perror("pipe write to next");
