@@ -1,0 +1,1 @@
+cmd_/vagrant/repo/taller3-drivers/ejercicios/1-nulo/nulo.ko := ld -r -m elf_x86_64 --build-id=sha1  -T arch/x86/module.lds -o /vagrant/repo/taller3-drivers/ejercicios/1-nulo/nulo.ko /vagrant/repo/taller3-drivers/ejercicios/1-nulo/nulo.o /vagrant/repo/taller3-drivers/ejercicios/1-nulo/nulo.mod.o;  true

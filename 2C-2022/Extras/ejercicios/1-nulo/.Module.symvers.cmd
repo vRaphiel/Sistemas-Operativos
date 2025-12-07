@@ -1,0 +1,1 @@
+cmd_/vagrant/repo/taller3-drivers/ejercicios/1-nulo/Module.symvers := sed 's/ko$$/o/' /vagrant/repo/taller3-drivers/ejercicios/1-nulo/modules.order | scripts/mod/modpost -m    -o /vagrant/repo/taller3-drivers/ejercicios/1-nulo/Module.symvers -e -i Module.symvers   -T -
